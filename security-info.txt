@@ -1,0 +1,8 @@
+1. JwtAuthenticationFilter
+→Intercepts HTTP requests and extracts JWT tokens.
+2. JwtUtils
+→Generates, validates tokens and provides helper methods
+3. UserDetailsServicelmpl
+→Fetches user details from the database
+4. UserDetailsimpl
+→Provides a Spring Security-compatible representation of the user for authentication and authorization
