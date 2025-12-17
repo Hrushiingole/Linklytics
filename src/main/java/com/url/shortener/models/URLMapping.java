@@ -2,7 +2,8 @@ package com.url.shortener.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
