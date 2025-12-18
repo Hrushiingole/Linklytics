@@ -6,3 +6,15 @@
 →Fetches user details from the database
 4. UserDetailsimpl
 →Provides a Spring Security-compatible representation of the user for authentication and authorization
+
+
+* Custom Security Configuration for our application
+Defines the security rules for handling HTTP requests.
+
+Configure JwtAuthenticationFilter in filter chain
+* Spring Security recognizes it as a filter that will only be executed once per request.
+* By default, Spring Security doesn't automatically include your custom filter (JwtAuthenticationFilter) in the filter chain unless you explicitly add it.
+
+Configure DaoAuthenticationProvider
+* Sets up how authentication is handled by Spring Security
+* Bean for AuthenticationManager and PasswordEncoder
