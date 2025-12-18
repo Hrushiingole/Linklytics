@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,11 @@ public class UserService {
         String Jwt=jwtUtils.generateToken(userDetails);
 
         return new JwtAuthenticationResponse(Jwt);
+    }
+    public User findByUsername(String username){
+        return userRepository.findByUsername(username).orElseThrow(
+                ()-> new UsernameNotFoundException("User not found with username: "+username)
+        );
     }
 
 }
