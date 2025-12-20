@@ -83,4 +83,21 @@ public class UrlMappingService {
         return clickEventList.stream().collect(Collectors.groupingBy(click-> click.getClickDate().toLocalDate(),Collectors.counting()));
 
     }
+
+    public URLMapping getOriginalUrl(String shortUrl) {
+        URLMapping urlMapping=urlMappingRepository.findByShortUrl(shortUrl);
+        if (urlMapping!=null){
+            //increase the click count in url mapping
+            urlMapping.setClickCount(urlMapping.getClickCount()+1);
+            urlMappingRepository.save(urlMapping);
+
+            //record the click event
+            ClickEvent clickEvent=new ClickEvent();
+            clickEvent.setClickDate(LocalDateTime.now());
+            clickEvent.setUrlMapping(urlMapping);
+            clickEventRepository.save(clickEvent);
+
+        }
+        return urlMapping;
+    }
 }
