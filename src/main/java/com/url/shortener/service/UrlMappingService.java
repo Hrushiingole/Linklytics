@@ -2,6 +2,7 @@ package com.url.shortener.service;
 
 import com.url.shortener.Dtos.ClickEventDto;
 import com.url.shortener.Dtos.UrlMappingDTO;
+import com.url.shortener.models.ClickEvent;
 import com.url.shortener.models.URLMapping;
 import com.url.shortener.models.User;
 import com.url.shortener.repository.ClickEventRepository;
@@ -9,8 +10,10 @@ import com.url.shortener.repository.UrlMappingRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -72,5 +75,12 @@ public class UrlMappingService {
                     .collect(Collectors.toList());
         }
         return null;
+    }
+
+    public Map<LocalDate, Long> getTotalClicksByUserAndDate(User user, LocalDate start, LocalDate end) {
+        List<URLMapping> urlMappings=urlMappingRepository.findByUser(user);
+        List<ClickEvent> clickEventList=clickEventRepository.findByUrlMappingInAndClickDateBetween(urlMappings,start.atStartOfDay(),end.plusDays(1).atStartOfDay());
+        return clickEventList.stream().collect(Collectors.groupingBy(click-> click.getClickDate().toLocalDate(),Collectors.counting()));
+
     }
 }
