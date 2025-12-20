@@ -1,8 +1,10 @@
 package com.url.shortener.service;
 
+import com.url.shortener.Dtos.ClickEventDto;
 import com.url.shortener.Dtos.UrlMappingDTO;
 import com.url.shortener.models.URLMapping;
 import com.url.shortener.models.User;
+import com.url.shortener.repository.ClickEventRepository;
 import com.url.shortener.repository.UrlMappingRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class UrlMappingService {
 
     private UrlMappingRepository urlMappingRepository;
+    private ClickEventRepository clickEventRepository;
 
     public UrlMappingDTO createShortUrl(String originalUrl, User user) {
         String shortUrl= generateShortUrl();
@@ -52,5 +55,22 @@ public class UrlMappingService {
     public List<UrlMappingDTO> getUrlsByUser(User user) {
         return urlMappingRepository.findByUser(user).stream().map(this::convertToDto)
                 .toList();
+    }
+
+    public List<ClickEventDto> getClickEventsByDate(String shortUrl, LocalDateTime start, LocalDateTime end) {
+        URLMapping urlMapping=urlMappingRepository.findByShortUrl(shortUrl);
+        if (urlMapping!=null){
+            return clickEventRepository.findByUrlMappingAndClickDateBetween(urlMapping,start,end)
+                    .stream().collect(Collectors.groupingBy(click->click.getClickDate().toLocalDate(),Collectors.counting()))
+                    .entrySet().stream()
+                    .map(entry->{
+                        ClickEventDto clickEventDto=new ClickEventDto();
+                        clickEventDto.setClickDate(entry.getKey());
+                        clickEventDto.setCount(entry.getValue());
+                        return clickEventDto;
+                    })
+                    .collect(Collectors.toList());
+        }
+        return null;
     }
 }
